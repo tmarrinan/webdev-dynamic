@@ -8,7 +8,7 @@
     },
     "contributors": ["Jon Demarais", "Ridwan Nur"
     ],
-    "repository": {},
+    "repository": {"https://github.com/tylermu/webdev-dynamic"},
     "dependencies": {
         "express": "^4.18.2",
         "sqlite3": "^5.1.6"
