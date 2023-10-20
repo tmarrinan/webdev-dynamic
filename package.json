@@ -3,10 +3,10 @@
     "description": "Dynamic Server",
     "version": "1.0.0",
     "author": {
-        "name": "",
-        "email": ""
+        "name": "Tyler Muchow",
+        "email": "much2718@stthomas.edu"
     },
-    "contributors": [
+    "contributors": ["Jon Demarais", "Ridwan Nur"
     ],
     "repository": {},
     "dependencies": {
