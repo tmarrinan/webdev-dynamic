@@ -3,12 +3,15 @@
     "description": "Dynamic Server",
     "version": "1.0.0",
     "author": {
-        "name": "",
-        "email": ""
+        "name": "Jackson Linehan",
+        "email": "line7313@stthomas.edu"
     },
     "contributors": [
+        "Andy Harnisch"
     ],
-    "repository": {},
+    "repository": {
+        "url": "https://github.com/line7313/webdev-dynamic"
+    },
     "dependencies": {
         "express": "^4.18.2",
         "sqlite3": "^5.1.6"
