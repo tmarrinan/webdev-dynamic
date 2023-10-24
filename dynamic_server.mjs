@@ -28,7 +28,23 @@ app.get('/', (req, res) => {
         if (err) {
             res.status(400);
         }
-        res.status(200).type('html').send(data);
+        res.status(200).type('html').send("<h1> Title Page <h1>");
+    })
+    
+});
+
+app.get('/team/:team', (req, res) => {   
+    let teamAbbr = req.params.team.toUpperCase();
+    console.log(teamAbbr);
+    
+    let query = `SELECT * FROM nhl_data WHERE home_team_abbr = '${teamAbbr}';`;
+    db.all(query, (err, rows) => {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            console.log(rows);
+        }
     })
     
 });
