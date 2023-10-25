@@ -1,0 +1,19 @@
+th {
+  text-align: center;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.sorting {
+  background-color: lightblue;
+  height: 3em;
+}
+
+.nav-btn {
+  background-color: lightcyan;
+  height: 3em;
+  margin-left: 1em;
+  margin-right: 1em;
+}
