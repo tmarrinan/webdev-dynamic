@@ -13,6 +13,7 @@ const templatePath = path.join(__dirname, 'templates');
 let app = express();
 app.use(express.static(root));
 
+let title = '';
 const db = new sqlite3.Database(path.join(__dirname, 'nhl_data.sqlite3'), sqlite3.OPEN_READONLY, (err) => {
     if (err) {
         console.log('Error connecting to database');
@@ -36,23 +37,22 @@ function queryDatabase(column, modifier, queryOverride = false) {
     return new Promise((resolve, reject) => {
         let query;
         if (queryOverride) {
-            query = `SELECT * FROM nhl_data WHERE ${column} ${modifier}`
+            query = `SELECT * FROM nhl_data WHERE ${column} ${modifier};`
         } else {
-            query = `SELECT * FROM nhl_data WHERE ${column} = ${modifier}`
+            query = `SELECT * FROM nhl_data WHERE home_team_abbr = '${column}' OR away_team_abbr = '${column}';`
         }
 
         console.log(query);
         db.all(query, (err, rows) => {
             if (err) {
-                console.log(err);
                 reject(err);
             }
             else {
+                //console.log(rows[0]);
                 resolve(rows);
             }
         })
-    })
-    
+    })    
 }
 
 function abbreviationMapper(abbr, column) {
@@ -86,6 +86,23 @@ function abbreviationMapper(abbr, column) {
     return queryModifier;
 }
 
+function renderTemplate(data) {
+
+
+}
+
+function mapName(inputAbbr, data) {
+
+    //console.log(data[0]);
+
+    if (inputAbbr == data[0].home_team_abbr) {
+        title = data[0].home_team;
+    } else {
+        title = data[0].away_team;
+    }
+    console.log("The team is :" + title);
+}
+
 
 
 app.get('/', async (req, res) => {   
@@ -94,9 +111,13 @@ app.get('/', async (req, res) => {
     });     
 });
 
-app.get('/team/:team', (req, res) => {   
+app.get('/team/:team', (req, res) => {
     let teamAbbr = req.params.team.toUpperCase();
-    queryDatabase('home_team_abbr', teamAbbr);    
+    let data = queryDatabase(teamAbbr);
+    data.then(() => {
+        console.log(data);
+        mapName(teamAbbr, data);
+    });
 });
 
 app.get('/quality/:quality', async (req, res) => {   
@@ -116,11 +137,9 @@ app.get('/importance/:importance', async (req, res) => {
     rows.then(() => console.log(rows));
     template.then((template) => {
         res.status(200).type('html').send(template);
-    });   
+    });
 });
 
-
-
 app.listen(port, () => {
-    console.log('Now listening on port ' + port);
+    console.log('http://localhost:8000');
 });
