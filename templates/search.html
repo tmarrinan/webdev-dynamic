@@ -1,29 +1,74 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Dynamic Cereal Information</title>
+    <title>Search Data</title>
     <link rel="stylesheet" href="../public/css/style.css" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- <link rel="stylesheet" href="css/style.css"/> -->
+
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/foundation.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/vendor/modernizr.js"></script>
   </head>
   <body>
-    <h1>Whole dataset</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Country</th>
-          <th>Women's Empowerment Index</th>
-          <th>Women's Empowerment Group</th>
-          <th>Global Gender Parity Index</th>
-          <th>Gender Parity Group</th>
-          <th>Human Development Group</th>
-          <th>Sustainable Development Goal Regions</th>
-        </tr>
-      </thead>
-      <tbody>
-        $TABLE_DATA$
-      </tbody>
-    </table>
+    <div class="grid-x grid-container">
+      <div
+        class="grid-x grid-padding-x"
+        style="margin-top: 1em; margin-bottom: 1em"
+      >
+        <div class="cell large-4">
+          <h2 class="center-text">All Data</h2>
+        </div>
+        <div class="cell large-4">
+          <form action="">
+            <div class="custom-select"></div>
+            <select type="submit" class="sorting" name="sorting" id="sorting">
+              <option value="weg" class="sorting">
+                Women's Empowerment Group
+              </option>
+              <option value="ggpg">Global Gender Parity Group</option>
+              <option value="region">Region</option>
+            </select>
+          </form>
+        </div>
+        <div class="cell large-4">
+          <button class="nav-btn">Previous</button>
+          <button class="nav-btn">Next</button>
+        </div>
+      </div>
+
+      <div class="grid-x grid-padding-x">
+        <div class="cell large-12">
+          <table>
+            <thead>
+              <tr>
+                <th class="center-text">Country</th>
+                <th class="center-text">Women's Empowerment Index</th>
+                <th class="center-text">Women's Empowerment Group</th>
+                <th class="center-text">Global Gender Parity Index</th>
+                <th class="center-text">Gender Parity Group</th>
+                <th class="center-text">Human Development Group</th>
+                <th class="center-text">
+                  Sustainable Development Goal Regions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              $TABLE_DATA$
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/vendor/what-input.js"></script>
+    <script src="js/vendor/foundation.js"></script>
+    <script src="js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+    </script>
   </body>
 </html>
