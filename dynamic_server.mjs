@@ -35,6 +35,34 @@ function dbSelect(query, params) {
     return p;
 }
 
+app.get('/planet/:name', (req, res) => {
+    let planet = req.params.name.toUpperCase();
+
+    let p1 = dbSelect('SELECT * FROM exoplanets WHERE planet = ?', [planet]);
+    let p2 = fs.promises.readFile(path.join(template, 'temp.html'), 'utf-8');
+    Promise.all([p1, p2]).then((results) => {
+        let response = results[1].replace('$$PLANET_NAME$$', results[0].pl_name);
+        let table_body = '';
+        results[0].forEach((planet) => {
+            let table_row = '<tr>';
+
+            table_row += '<td>' + planet.discoverymethod + '</td>\n';
+            table_row += '<td>' + planet.disc_year + '</td>\n';
+            table_row += '<td>' + planet.disc_facility + '</td>\n';
+            table_row += '<td>' + planet.pl_orbper + '</td>\n';
+            table_row += '<td>' + planet.pl_bmasse + '</td>\n';
+            table_row += '<td>' + planet.sy_dist + '</td>\n';
+
+            table_row += '</tr>\n';
+            table_body += table_row;
+        });
+        response = response.replace('$$TABLE_BODY$$', table_body);
+        res.status(200).type('html').send(response);
+    }).catch((error) => {
+        res.status(404).type('txt').send('File not found');
+    });
+});
+
 app.listen(port, () => {
     console.log('Now listening on port ' + port);
 });
