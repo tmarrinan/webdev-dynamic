@@ -36,10 +36,11 @@ let template = new Promise((resolve, reject) => {
 function queryDatabase(column, modifier, queryOverride = false) {
     return new Promise((resolve, reject) => {
         let query;
+        let selectionModifier = "season, date, home_team, away_team, home_team_abbr, away_team_abbr, home_team_score, away_team_score, game_quality_rating, game_importance_rating FROM nhl_data WHERE home_team_abbr";
         if (queryOverride) {
-            query = `SELECT * FROM nhl_data WHERE ${column} ${modifier};`
+            query = `SELECT ${selectionModifier} FROM nhl_data WHERE ${column} ${modifier};`
         } else {
-            query = `SELECT * FROM nhl_data WHERE home_team_abbr = '${column}' OR away_team_abbr = '${column}';`
+            query = `SELECT ${selectionModifier} = '${column}' OR away_team_abbr = '${column}';`
         }
 
         console.log(query);
@@ -48,7 +49,6 @@ function queryDatabase(column, modifier, queryOverride = false) {
                 reject(err);
             }
             else {
-                //console.log(rows[0]);
                 resolve(rows);
             }
         })
@@ -93,8 +93,6 @@ function renderTemplate(data) {
 
 function mapName(inputAbbr, data) {
 
-    //console.log(data[0]);
-
     if (inputAbbr == data[0].home_team_abbr) {
         title = data[0].home_team;
     } else {
@@ -114,7 +112,7 @@ app.get('/', async (req, res) => {
 app.get('/team/:team', (req, res) => {
     let teamAbbr = req.params.team.toUpperCase();
     let data = queryDatabase(teamAbbr);
-    data.then(() => {
+    data.then((data) => {
         console.log(data);
         mapName(teamAbbr, data);
     });
