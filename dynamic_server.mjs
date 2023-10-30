@@ -35,12 +35,12 @@ function dbSelect(query, params) {
 }
 
 app.get('/pl_name/:name', (req, res) => {
-    let planet = req.params.name.toUpperCase();
-
-    let p1 = dbSelect('SELECT * FROM Planets WHERE pl_name = ?', [planet]);
+    let planet = decodeURIComponent(req.params.name.toUpperCase());
+    console.log(planet);
+    let p1 = dbSelect('SELECT * FROM Planets WHERE UPPER(pl_name) = ?', [planet]);
     let p2 = fs.promises.readFile(path.join(template, 'temp.html'), 'utf-8');
     Promise.all([p1, p2]).then((results) => {
-        let response = results[1].replace('$$PLANET_NAME$$', results[0].pl_name);
+        let response = results[1].replace('$$PLANET_NAME$$', results[0][0].pl_name).replace('$$PLANET_NAME$$', results[0][0].pl_name);
         let table_body = '';
         results[0].forEach((planet) => {
             let table_row = '<tr>';
