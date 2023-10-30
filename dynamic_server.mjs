@@ -17,3 +17,26 @@ app.use(express.static(root));
 app.listen(port, () => {
     console.log('Now listening on port ' + port);
 });
+
+const db = new sqlite3.Database(path.join(__dirname, 'bad_drivers.sqlite3'), sqlite3.OPEN_READONLY, (err) => {
+    if(err) {
+        console.log("Error connecting to database")
+    }
+    else {
+        console.log("Successfully connected to database")
+    }
+});
+
+function dbSelect(query, params) {
+    let p = new Promise((resolve, reject) => {
+        db.all(query, params, (err, rows) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
