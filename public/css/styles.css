@@ -1,0 +1,9 @@
+.smallheight {
+    height: 5vh;
+}
+
+.namestyle {
+    font-size: 7vh;
+    font-weight: bold;
+    line-height: 8vh;
+}
