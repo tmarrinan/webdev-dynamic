@@ -9,6 +9,7 @@ const port = 8000;
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 const root = path.join(__dirname, 'public');
 const templatePath = path.join(__dirname, 'templates');
+let renderedTemplate = "";
 
 let app = express();
 app.use(express.static(root));
@@ -43,7 +44,6 @@ function queryDatabase(column, modifier, queryOverride = false) {
             query = `SELECT ${selectionModifier} = '${column}' OR away_team_abbr = '${column}';`
         }
 
-        console.log(query);
         db.all(query, (err, rows) => {
             if (err) {
                 reject(err);
@@ -86,9 +86,21 @@ function abbreviationMapper(abbr, column) {
     return queryModifier;
 }
 
-function renderTemplate(data) {
+function renderTemplate(route, data) {
 
+    return new Promise((resolve, reject) => {
+        template.then((template) => {
+            if (route == "team") {
+                console.log(data);
+                renderedTemplate = template.replace('##TITLE##', title);
+                resolve(renderedTemplate);
+            }
+            
+            reject();
+        });        
+    });
 
+    
 }
 
 function mapName(inputAbbr, data) {
@@ -98,10 +110,7 @@ function mapName(inputAbbr, data) {
     } else {
         title = data[0].away_team;
     }
-    console.log("The team is :" + title);
 }
-
-
 
 app.get('/', async (req, res) => {   
     template.then((template) => {
@@ -113,9 +122,12 @@ app.get('/team/:team', (req, res) => {
     let teamAbbr = req.params.team.toUpperCase();
     let data = queryDatabase(teamAbbr);
     data.then((data) => {
-        console.log(data);
         mapName(teamAbbr, data);
+        renderTemplate("team", data).then(() => {
+        res.status(200).type('html').send(renderedTemplate);         
+        });
     });
+    
 });
 
 app.get('/quality/:quality', async (req, res) => {   
@@ -123,6 +135,7 @@ app.get('/quality/:quality', async (req, res) => {
     let queryModifier = abbreviationMapper(req.params.quality.toLowerCase(), column);
     let rows = queryDatabase(column, queryModifier, true);
     rows.then(() => console.log(rows));
+    renderTemplate("team");
     template.then((template) => {
         res.status(200).type('html').send(template);
     });   
@@ -133,6 +146,7 @@ app.get('/importance/:importance', async (req, res) => {
     let queryModifier = abbreviationMapper(req.params.importance.toLowerCase(), column);
     let rows = queryDatabase(column, queryModifier, true);
     rows.then(() => console.log(rows));
+    renderTemplate("team");
     template.then((template) => {
         res.status(200).type('html').send(template);
     });
