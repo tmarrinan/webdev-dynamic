@@ -6,7 +6,6 @@ import { default as express } from 'express';
 import { default as sqlite3 } from 'sqlite3';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-
 const port = 8000;
 const root = path.join(__dirname, 'public');
 const template = path.join(__dirname, 'templates');
@@ -35,10 +34,10 @@ function dbSelect(query, params) {
     return p;
 }
 
-app.get('/planet/:name', (req, res) => {
+app.get('/pl_name/:name', (req, res) => {
     let planet = req.params.name.toUpperCase();
 
-    let p1 = dbSelect('SELECT * FROM exoplanets WHERE planet = ?', [planet]);
+    let p1 = dbSelect('SELECT * FROM Planets WHERE pl_name = ?', [planet]);
     let p2 = fs.promises.readFile(path.join(template, 'temp.html'), 'utf-8');
     Promise.all([p1, p2]).then((results) => {
         let response = results[1].replace('$$PLANET_NAME$$', results[0].pl_name);
