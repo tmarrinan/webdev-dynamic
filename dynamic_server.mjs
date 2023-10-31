@@ -42,7 +42,7 @@ function queryDatabase(column, modifier, queryOverride = false) {
         if (queryOverride) {
             query = `SELECT ${selectionModifier} ${column} ${modifier};`
         } else {
-            query = `SELECT ${selectionModifier} home_team_abbr = '${column}' OR away_team_abbr = '${column}';`
+            query = `SELECT ${selectionModifier} home_team_abbr = '${column}' OR away_team_abbr = '${column}' ORDER BY date DESC;`
         }
 
         db.all(query, (err, rows) => {
@@ -50,7 +50,7 @@ function queryDatabase(column, modifier, queryOverride = false) {
                 reject(err);
             }
             else {
-                resolve(rows);
+                resolve(rows);                
             }
         })
     })    
@@ -93,19 +93,49 @@ function abbreviationMapper(abbr, column) {
 }
 
 
+function createTableRow(entrys) {
+    let tableEntrys = '<tr>';
+
+    entrys.forEach((entry) => {
+        tableEntrys += '<td>' + entry + '</td>';
+    })
+
+    return tableEntrys + '</tr>';
+}
+
+function createTableHead(columns) {
+    let tableHead = '<thead> <tr>';
+
+    columns.forEach((column) => {
+        tableHead += '<th>' + column + '</th>';
+    })
+
+    return tableHead + '</tr> </thead> <tbody>';
+}
+
 function renderTemplate(route, data, userInput) {
 
     return new Promise((resolve, reject) => {
         template.then((template) => {
-            if (route == "team") {
+            if (route == "team") { //This is the route we specify when calling the renderTemplate function
                 let teamName = mapName(userInput, data);
-                title = `Game Data for ${teamName}`;
-                renderedTemplate = template.replace('##TITLE##', title);
+                title = `Game Data for ${teamName}`; //The title above the data
+                let table = ''; //Table structure is as follows, HEAD, ROW, ROW, ROW, etc
+                table += createTableHead(["Date", "Home Team", "Away Team", "Home Team Score", "Away Team Score"]); // Create the labels for the columns we want for this route (will change depending on route)
+                               
+                table += '<tbody>'; // NEED TO PUT EACH ROW WITHIN THE BODY
+                data.forEach((game) => {
+                    table += createTableRow([game.date, game.home_team, game.away_team, game.home_team_score, game.away_team_score]); // Populate a row for every game
+                })
+                table += '</tbody>'
+                
+                renderedTemplate = template.replace('##TITLE##', title); // title replacement
+                renderedTemplate = renderedTemplate.replace('##TABLE_DATA##', table); // table replacement
                 resolve(renderedTemplate);
 
             } else if (route == "quality") {
                 title = `Showing Data For ${titleAbbr} Quality Games `;
-                renderedTemplate = template.replace('##TITLE##', title);
+                renderedTemplate = template.replace('##test##', "replacement");
                 resolve(renderedTemplate);
             } else if (route == "importance") {
                 title = `Showing Data For ${titleAbbr} Importance Games `;
