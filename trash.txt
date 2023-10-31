@@ -1,0 +1,23 @@
+app.get('/State/:name', (req, res) => {
+
+    let state = req.params.name;
+
+    let p1 = dbSelect("SELECT * FROM drivers WHERE State=?", [state]);
+    let p2 = fs.promises.readFile(path.join(template, 'template2.html'), 'utf-8');
+    Promise.all([p1, p2]).then((results) => {
+        console.log(p1)
+        let response = results[1].replace('$$STATENAME$$', results[0][0].State);
+        results[0].forEach((row) => {
+            response += response.replace('$$INPUT1$$',row["Number of drivers involved in fatal collisions per billion miles"]);
+            response += response.replace('$$INPUT2$$',row["Percentage Of Drivers Involved In Fatal Collisions Who Were Speeding"]);
+            response += response.replace('$$INPUT3$$',row["Percentage Of Drivers Involved In Fatal Collisions Who Were Alcohol-Impaired"]);
+            response += response.replace('$$INPUT4$$',row["Percentage Of Drivers Involved In Fatal Collisions Who Were Not Distracted"]);
+            response += response.replace('$$INPUT5$$',row["Percentage Of Drivers Involved In Fatal Collisions Who Had Not Been Involved In Any Previous Accidents"]);
+            response += response.replace('$$INPUT6$$',row["Car Insurance Premiums ($)"]);
+            response += response.replace('$$INPUT7$$',row["Losses incurred by insurance companies for collisions per insured driver ($)"]);
+        res.status(200).type('html').send(response);
+    }).catch((error) => {
+        console.error("Error:", error); // Log the error for debugging
+        res.status(404).type('txt').send('File not found !!!');
+    });
+});
