@@ -42,8 +42,13 @@ app.get('/:filt/:val', (req, res) => {
     let p2 = fs.promises.readFile(path.join(template, 'temp.html'), 'utf-8');
 
     Promise.all([p1, p2]).then((results) => {
-        console.log(filter);
         let response = results[1].replace('$$FILTER$$', value).replace('$$FILTER$$', value);
+        try {
+            response = response.replace('$$NEXT$$', parseInt(value)+1);
+            response = response.replace('$$PREV$$', parseInt(value)-1);
+        } catch {
+        }
+
         let table_body = '';
         results[0].forEach((planet) => {
             let table_row = '<tr>';
