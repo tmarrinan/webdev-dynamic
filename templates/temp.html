@@ -3,29 +3,45 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Exoplanets|$$PLANET_NAME$$</title>
-	<link rel="stylesheet" href="../style.css"/>
-	<link rel="stylesheet" href="../foundation.css"/>
-	<link rel="icon" href="favicon.ico" type="image/x-icon">
-	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+	<title>Exoplanets | $$FILTER$$</title>
+	<link rel="stylesheet" href="../css/style.css"/>
+	<link rel="stylesheet" href="../css/foundation.css"/>
 </head>
 <body>
-	<h1>$$PLANET_NAME$$</h1>
-        <br>
-        <table>
-            <thead>
-                <tr>
-                    <th>Discovery Method</th>
-                    <th>Discovery Year</th>
-                    <th>Discovery Facility</th>
-                    <th>Orbital Period</th>
-					<th>Planet Mass</th>
-					<th>Distance from Earth</th>
-                </tr>
-            </thead>
-            <tbody>
-                $$TABLE_BODY$$
-            </tbody>
-        </table>
+	<div class="off-canvas-wrapper">
+        <!-- Your page content lives here -->
+        <div class="off-canvas-content" data-off-canvas-content>
+            <!-- main content within a `grid-container` -->
+            <div class="grid-container full-width full-height">
+                <!-- `grid-x` represents a row -->
+                <div class="grid-x grid-padding-x full-width" style="position: fixed; margin-top: -4vh;">
+					<div class="cell small-6 large-6 align-center-left"><a href="$$PREV$$">Previous</a></div>
+                    <div class="cell small-6 large-6 align-center-right"><a href="$$NEXT$$">Next</a></div>
+				</div>
+			</div>
+			<div class="grid-container full-width full-height">
+				<div class="grid-x grid-padding-x full-width" style="margin-inline: -8vw; margin-top: 8vh;">
+					<h1>$$FILTER$$</h1>
+					<br>
+					<table>
+						<thead>
+							<tr>
+								<th>Planet Name</th>
+								<th>Discovery Method</th>
+								<th>Discovery Year</th>
+								<th>Discovery Facility</th>
+								<th>Orbital Period</th>
+								<th>Planet Mass</th>
+								<th>Distance from Earth</th>
+							</tr>
+						</thead>
+						<tbody>
+							$$TABLE_BODY$$
+						</tbody>
+					</table>
+				</div>
+			</div>	
+		</div>
+	</div>
 </body>
 </html>
