@@ -118,7 +118,7 @@ function renderTemplate(route, data, userInput) {
     return new Promise((resolve, reject) => {
         template.then((template) => {
             if (route == "team") { //This is the route we specify when calling the renderTemplate function
-                let teamName = mapName(userInput, data);
+                let teamName = abbreviationMapper(userInput, data);
                 title = `Game Data for ${teamName}`; //The title above the data
                 let table = ''; //Table structure is as follows, HEAD, ROW, ROW, ROW, etc
                 table += createTableHead(["Date", "Home Team", "Away Team", "Home Team Score", "Away Team Score"]); // Create the labels for the columns we want for this route (will change depending on route)
@@ -134,31 +134,30 @@ function renderTemplate(route, data, userInput) {
                 resolve(renderedTemplate);
 
             } else if (route == "quality") {
-                let gameQuality = mapName(userInput, rows);
+                let gameQuality = titleAbbr;
                 title = `Showing Data For ${gameQuality} Quality Games `;
                 let table = '';
                 table += createTableHead(["Date", "Home Team", "Away Team", "Game Quality Rating"]);
                 
                 table += '<tbody>';
                 data.forEach((game) => {
-                    table += createTableRow([game.date, game.home_team, game.away_team, game_quality_rating])
+                    table += createTableRow([game.date, game.home_team, game.away_team, game.game_quality_rating]);
                 })
                 table+= '</tbody>'
-                
+
                 renderedTemplate = template.replace('##TITLE##', title);
                 renderedTemplate = renderedTemplate.replace('##TABLE_DATA##', table); // table replacement
                 resolve(renderedTemplate);
 
             } else if (route == "importance") {
-
-                let teamName = mapName(userInput, data);
+                let teamName = titleAbbr;
                 title = `Showing Data For ${teamName} Importance Games `;
                 let table = ''; //Table structure is as follows, HEAD, ROW, ROW, ROW, etc
                 table += createTableHead(["Date", "Home Team", "Away Team", "Importance"]); // Create the labels for the columns we want for this route (will change depending on route)
                                
                 table += '<tbody>'; // NEED TO PUT EACH ROW WITHIN THE BODY
                 data.forEach((game) => {
-                    table += createTableRow([game.date, game.home_team, game.away_team, game_importance_rating]); // Populate a row for every game
+                    table += createTableRow([game.date, game.home_team, game.away_team, game.game_importance_rating]); // Populate a row for every game
                 })
                 table += '</tbody>'
                 
@@ -168,13 +167,11 @@ function renderTemplate(route, data, userInput) {
             }
             
             reject();
-        });        
-    });
-
-    
+        });
+    });    
 }
 
-function mapName(inputAbbr, data) { 
+function mapName(inputAbbr, data) {
 
     if (inputAbbr == data[0].home_team_abbr) {
          return data[0].home_team;
@@ -206,7 +203,7 @@ app.get('/quality/:quality', async (req, res) => {
     let quality = req.params.quality.toLowerCase();
     let queryModifier = abbreviationMapper(quality, column);
     let rows = queryDatabase(column, queryModifier, true);
-    rows.then(() => {
+    rows.then((rows) => {
         renderTemplate("quality", rows, quality).then(() => {
             res.status(200).type('html').send(renderedTemplate);         
         });
@@ -218,7 +215,7 @@ app.get('/importance/:importance', async (req, res) => {
     let importance = req.params.importance.toLowerCase();
     let queryModifier = abbreviationMapper(importance, column);
     let rows = queryDatabase(column, queryModifier, true);
-    rows.then(() => {
+    rows.then((rows) => {
         renderTemplate("importance", rows, importance).then(() => {
             res.status(200).type('html').send(renderedTemplate);         
         });
