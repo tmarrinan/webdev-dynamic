@@ -54,7 +54,40 @@ app.get('/State/:name', (req, res) => {
             response = response.replace('$$INPUT5$$', row["Percentage Of Drivers Involved In Fatal Collisions Who Had Not Been Involved In Any Previous Accidents"]);
             response = response.replace('$$INPUT6$$', row["Car Insurance Premiums ($)"]);
             response = response.replace('$$INPUT7$$', row["Losses incurred by insurance companies for collisions per insured driver ($)"]);
-        });
+            let ID = row["ID"];
+            console.log(ID);
+            let IDplus = ID + 1;
+            let IDminus = ID - 1;
+            if (ID > 0 && ID < 51) {
+                let p3 = dbSelect("SELECT State FROM drivers WHERE ID = ?", [IDplus]);
+                Promise.all([p3]).then((results) => {
+                results[0].forEach((row) => {
+                    let NextState = row.State
+                    console.log(NextState);
+                    response = response.replace('$$NEXT$$', NextState);
+                });
+                }).catch((error) => {
+                console.error("Error:", error); // Log the error for debugging
+                res.status(404).type('txt').send('File not found !!!');
+                });
+            }   
+            
+            if (ID > 1 && ID <= 51) {
+                let p4 = dbSelect("SELECT State FROM drivers WHERE ID=?", [(IDminus)]);
+                response = response.replace('$$PREV$$', p4);
+                }
+            if (ID == 1) {
+                response = response.replace('$$PREV$$', "")
+                response = response.replace('Previous', "")
+            }
+            if (ID == 51) {
+                response = response.replace('$$NEXT$$', "")
+                response = response.replace('Next', "")
+            }
+            
+        
+        });  
+        
         res.status(200).type('html').send(response);
     }).catch((error) => {
         console.error("Error:", error); // Log the error for debugging
@@ -88,6 +121,16 @@ app.get('/Insurance/:frequency', (req, res) => { //Car insurance
             table_body += table_row;
         });
         response = response.replace('$$TABLE_BODY$$', table_body);
+        if (frequency <= 100) {
+            response = response.replace('$$PREV$$', "")
+            response = response.replace('Previous', "")
+        }
+        response = response.replace('$$NEXT$$', (frequency+100))
+        if (frequency >= 1300) {
+            response = response.replace('$$NEXT$$', "")
+            response = response.replace('Next', "")
+        }
+        response = response.replace('$$PREV$$', (frequency-100))
         res.status(200).type('html').send(response);
     }).catch((error) => {
         console.error("Error:", error); // Log the error for debugging

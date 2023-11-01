@@ -3,7 +3,9 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Template 1</title>
+    <link rel="stylesheet" href="../css/foundation.css">
+    <link rel="stylesheet" href="../css/styles.css">
+	<title>Template 2</title>
 </head>
 <body>
     <div class="off-canvas-wrapper">
@@ -16,16 +18,58 @@
                     <div class="cell small-12 show-for-small-only smallheight"><br></div>
                     <div class="cell small-12 show-for-medium"><br></div>
                     <div class="cell small-12 namestyle">$$STATENAME$$</div>
+                    <div class="cell small-12"><br></div>
                     <div class="cell small-12 medium-12" style="background-color: black;">,</div>
+                    <div class="cell small-12"><br></div>
                 </div>
                 <div class="grid-x grid-padding x">
-                    <div class="cell small-12 namestyle">Number of drivers involved in fatal collisions per billion miles: $$INPUT1$$</div>
-                    <div class="cell small-12 namestyle">Percentage Of Drivers Involved In Fatal Collisions Who Were Speeding: $$INPUT2$$</div>
-                    <div class="cell small-12 namestyle">Percentage Of Drivers Involved In Fatal Collisions Who Were Alcohol-Impaired: $$INPUT3$$</div>
-                    <div class="cell small-12 namestyle">Percentage Of Drivers Involved In Fatal Collisions Who Were Not Distracted: $$INPUT4$$</div>
-                    <div class="cell small-12 namestyle">Percentage Of Drivers Involved In Fatal Collisions Who Had Not Been Involved In Any Previous Accidents: $$INPUT5$$</div>
-                    <div class="cell small-12 namestyle">Car Insurance Premiums ($): $$INPUT6$$</div>
-                    <div class="cell small-12 namestyle">Losses incurred by insurance companies for collisions per insured driver ($): $$INPUT7$$</div>
+                    <table> 
+                        <!-- <thead>
+                            <tr>
+                                <th>State</th>
+                                <th>Car Insurance</th>
+                            </tr>
+                        </thead> -->
+                        <tbody>
+                            <tr>
+                                <th>Number of drivers involved in fatal collisions per billion miles</th>
+                                <th>$$INPUT1$$</th>
+                            </tr>
+                            <tr>
+                                <th>Percentage Of Drivers Involved In Fatal Collisions Who Were Speeding</th>
+                                <th>$$INPUT2$$</th>
+                            </tr>
+                            <tr>
+                                <th>Percentage Of Drivers Involved In Fatal Collisions Who Were Alcohol-Impaired</th>
+                                <th>$$INPUT3$$</th>
+                            </tr>
+                            <tr>
+                                <th>Percentage Of Drivers Involved In Fatal Collisions Who Were Not Distracted</th>
+                                <th>$$INPUT4$$</th>
+                            </tr>
+                            <tr>
+                                <th>Percentage Of Drivers Involved In Fatal Collisions Who Had Not Been Involved In Any Previous Accidents</th>
+                                <th>$$INPUT5$$</th>
+                            </tr>
+                            <tr>
+                                <th>Car Insurance Premiums ($)</th>
+                                <th>$$INPUT6$$</th>
+                            </tr>
+                            <tr>
+                                <th>Losses incurred by insurance companies for collisions per insured driver ($)</th>
+                                <th>$$INPUT7$$</th>
+                            </tr>
+                        </tbody>
+                      </table>
+                    </table>
+                </div>
+                <div class="grid-x grid-padding x">
+                    <div class="cell small-12"><br></div>
+                    <div class="cell small-12"><br></div>
+                    <div class="cell small-6"><a href='$$PREV$$'>Previous</a></div>
+                    <div class="cell small-6" style="text-align: right;"><a href='$$NEXT$$'>Next</a></div>
+                    <div class="cell small-12"><br></div>
+                    <div class="cell small-12"><br></div>
                 </div>
             </div>
         </div>
