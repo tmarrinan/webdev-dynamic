@@ -58,6 +58,7 @@ app.get("/all", (req, res) => {
         table_row += `<td class="center-text">${equality.ggpg}</td>`;
         table_row += `<td class="center-text">${equality.hdg}</td>`;
         table_row += `<td class="center-text">${equality.region}</td>`;
+        table_row += `<td class="center-text">${equality.population}</td>`;
         table_row += "</tr>";
         table_body += table_row;
       });
