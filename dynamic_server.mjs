@@ -63,7 +63,7 @@ function abbreviationMapper(abbr, column) {
     switch (abbr) {
         case "verylow":
             queryModifier = "< 20;"
-            titleAbbr = "Very High"
+            titleAbbr = "Very Low"
             break;
 
         case "low":
@@ -134,8 +134,8 @@ function renderTemplate(route, data, userInput) {
                 resolve(renderedTemplate);
 
             } else if (route == "quality") {
-                let teamName = mapName(userInput, data);
-                title = `Showing Data For ${teamName} Quality Games `;
+                let gameQuality = mapName(userInput, rows);
+                title = `Showing Data For ${gameQuality} Quality Games `;
                 let table = '';
                 table += createTableHead(["Date", "Home Team", "Away Team", "Game Quality Rating"]);
                 
