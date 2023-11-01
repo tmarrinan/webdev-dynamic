@@ -71,11 +71,100 @@ app.get("/all", (req, res) => {
 });
 
 app.get("/weg/:group", (req, res) => {
-  let group = req.params.group;
-  console.log(group);
-})
+  console.log("trying!");
+  let empowerment = req.params.group;
+  let p1 = dbSelect("SELECT * FROM Equality WHERE weg = ?", [empowerment]);
+  let p2 = fs.promises.readFile(
+    path.join(template, "empowerment.html"),
+    "utf-8"
+  );
+  Promise.all([p1, p2])
+    .then((results) => {
+      let equality_list = results[0];
+      let response = results[1];
+      let table_body = "";
+      equality_list.forEach((equality) => {
+        let table_row = "<tr>";
+        table_row += `<td class="center-text">${equality.country}</td>`;
+        table_row += `<td class="center-text">${equality.wei}</td>`;
+        table_row += `<td class="center-text">${equality.weg}</td>`;
+        table_row += `<td class="center-text">${equality.ggpi}</td>`;
+        table_row += `<td class="center-text">${equality.ggpg}</td>`;
+        table_row += `<td class="center-text">${equality.hdg}</td>`;
+        table_row += `<td class="center-text">${equality.region}</td>`;
+        table_row += `<td class="center-text">${equality.population}</td>`;
+        table_row += "</tr>";
+        table_body += table_row;
+      });
+      response = response.replace("$TABLE_DATA$", table_body);
+      res.status(200).type("html").send(response);
+    })
+    .catch((error) => {
+      res.status(404).type("txt").send(error);
+    });
+});
 
+app.get("/ggpg/:group", (req, res) => {
+  console.log("trying!");
+  let parity = req.params.group;
+  let p1 = dbSelect("SELECT * FROM Equality WHERE ggpg = ?", [parity]);
+  let p2 = fs.promises.readFile(path.join(template, "parity.html"), "utf-8");
+  Promise.all([p1, p2])
+    .then((results) => {
+      let equality_list = results[0];
+      let response = results[1];
+      let table_body = "";
+      equality_list.forEach((equality) => {
+        let table_row = "<tr>";
+        table_row += `<td class="center-text">${equality.country}</td>`;
+        table_row += `<td class="center-text">${equality.wei}</td>`;
+        table_row += `<td class="center-text">${equality.weg}</td>`;
+        table_row += `<td class="center-text">${equality.ggpi}</td>`;
+        table_row += `<td class="center-text">${equality.ggpg}</td>`;
+        table_row += `<td class="center-text">${equality.hdg}</td>`;
+        table_row += `<td class="center-text">${equality.region}</td>`;
+        table_row += `<td class="center-text">${equality.population}</td>`;
+        table_row += "</tr>";
+        table_body += table_row;
+      });
+      response = response.replace("$TABLE_DATA$", table_body);
+      res.status(200).type("html").send(response);
+    })
+    .catch((error) => {
+      res.status(404).type("txt").send(error);
+    });
+});
 
+app.get("/region/:region", (req, res) => {
+  console.log("trying!");
+  let region = req.params.region;
+  let p1 = dbSelect("SELECT * FROM Equality WHERE region = ?", [region]);
+  let p2 = fs.promises.readFile(path.join(template, "region.html"), "utf-8");
+  Promise.all([p1, p2])
+    .then((results) => {
+      let equality_list = results[0];
+      let response = results[1];
+      let table_body = "";
+      equality_list.forEach((equality) => {
+        let table_row = "<tr>";
+        table_row += `<td class="center-text">${equality.country}</td>`;
+        table_row += `<td class="center-text">${equality.wei}</td>`;
+        table_row += `<td class="center-text">${equality.weg}</td>`;
+        table_row += `<td class="center-text">${equality.ggpi}</td>`;
+        table_row += `<td class="center-text">${equality.ggpg}</td>`;
+        table_row += `<td class="center-text">${equality.hdg}</td>`;
+        table_row += `<td class="center-text">${equality.region}</td>`;
+        table_row += `<td class="center-text">${equality.population}</td>`;
+        table_row += "</tr>";
+        table_body += table_row;
+      });
+      response = response.replace("$TABLE_DATA$", table_body);
+      res.status(200).type("html").send(response);
+    })
+    .catch((error) => {
+      res.status(404).type("txt").send(error);
+    });
+});
 
 app.listen(port, () => {
   console.log("Now listening on port " + port);
