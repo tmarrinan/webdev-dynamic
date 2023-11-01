@@ -118,7 +118,7 @@ function renderTemplate(route, data, userInput) {
     return new Promise((resolve, reject) => {
         template.then((template) => {
             if (route == "team") { //This is the route we specify when calling the renderTemplate function
-                let teamName = abbreviationMapper(userInput, data);
+                let teamName = mapName(userInput, data);
                 title = `Game Data for ${teamName}`; //The title above the data
                 let table = ''; //Table structure is as follows, HEAD, ROW, ROW, ROW, etc
                 table += createTableHead(["Date", "Home Team", "Away Team", "Home Team Score", "Away Team Score"]); // Create the labels for the columns we want for this route (will change depending on route)
