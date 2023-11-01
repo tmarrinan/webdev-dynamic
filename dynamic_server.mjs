@@ -134,12 +134,36 @@ function renderTemplate(route, data, userInput) {
                 resolve(renderedTemplate);
 
             } else if (route == "quality") {
-                title = `Showing Data For ${titleAbbr} Quality Games `;
-                renderedTemplate = template.replace('##test##', "replacement");
-                resolve(renderedTemplate);
-            } else if (route == "importance") {
-                title = `Showing Data For ${titleAbbr} Importance Games `;
+                let teamName = mapName(userInput, data);
+                title = `Showing Data For ${teamName} Quality Games `;
+                let table = '';
+                table += createTableHead(["Date", "Home Team", "Away Team", "Game Quality Rating"]);
+                
+                table += '<tbody>';
+                data.forEach((game) => {
+                    table += createTableRow([game.date, game.home_team, game.away_team, game_quality_rating])
+                })
+                table+= '</tbody>'
+                
                 renderedTemplate = template.replace('##TITLE##', title);
+                renderedTemplate = renderedTemplate.replace('##TABLE_DATA##', table); // table replacement
+                resolve(renderedTemplate);
+
+            } else if (route == "importance") {
+
+                let teamName = mapName(userInput, data);
+                title = `Showing Data For ${teamName} Importance Games `;
+                let table = ''; //Table structure is as follows, HEAD, ROW, ROW, ROW, etc
+                table += createTableHead(["Date", "Home Team", "Away Team", "Importance"]); // Create the labels for the columns we want for this route (will change depending on route)
+                               
+                table += '<tbody>'; // NEED TO PUT EACH ROW WITHIN THE BODY
+                data.forEach((game) => {
+                    table += createTableRow([game.date, game.home_team, game.away_team, game_importance_rating]); // Populate a row for every game
+                })
+                table += '</tbody>'
+                
+                renderedTemplate = template.replace('##TITLE##', title); // title replacement
+                renderedTemplate = renderedTemplate.replace('##TABLE_DATA##', table); // table replacement
                 resolve(renderedTemplate);
             }
             
