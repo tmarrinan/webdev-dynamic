@@ -6,7 +6,11 @@
         "name": "",
         "email": ""
     },
-    "contributors": [],
+    "contributors": [
+        "Josh Kahlbaugh",
+        "Omar Alshaali",
+        "Jasper Olson"
+    ],
     "repository": {},
     "dependencies": {
         "bootstrap": "^5.3.2",
