@@ -39,7 +39,7 @@ let query1="SELECT * FROM candy WHERE sugarpercent < 0.25 ORDER BY sugarpercent"
 let query2="SELECT * FROM candy WHERE chocolate == 1 AND winpercent > 0.7 ORDER BY winpercent DESC"
 let query3="SELECT * FROM candy WHERE fruity == 1 AND winpercent > 0.7 ORDER BY winpercent DESC"
 
-app.get('/home', (req, res) => {
+app.get('/', (req, res) => {
     // Send the index.html file when the homepage is accessed
     res.sendFile(path.join(template, 'index.html'), 'utf-8');
 });
