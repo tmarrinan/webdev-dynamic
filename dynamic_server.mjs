@@ -79,34 +79,6 @@ app.get("/all", (req, res) => {
     });
 });
 
-app.get("/all", (req, res) => {
-  console.log("trying! 2");
-  let p1 = dbSelect("SELECT * FROM Equality");
-  let p2 = fs.promises.readFile(path.join(template, "search.html"), "utf-8");
-  Promise.all([p1, p2])
-    .then((results) => {
-      let data_list = results[0];
-      let response = results[1];
-      console.log(response);
-      let data_string = "";
-      data_list.forEach((equality) => {
-        let data_row = "{";
-        data_row += `x:${equality.wei},`;
-        data_row += `y:${equality.ggpi},`;
-        data_row += `r:${Math.pow(equality.population, 1 / 6)}`;
-        data_row += "},";
-        data_string += data_row;
-        console.log(data_string);
-      });
-      response = response.replace("$PLOT_DATA$", data_string);
-      console.log(response);
-      res.status(200).type("html").send(response);
-    })
-    .catch((error) => {
-      res.status(404).type("txt").send(error);
-    });
-});
-
 app.get("/weg/:group", (req, res) => {
   console.log("trying!");
   let empowerment = req.params.group;
@@ -120,6 +92,7 @@ app.get("/weg/:group", (req, res) => {
       let equality_list = results[0];
       let response = results[1];
       let table_body = "";
+      let data_string = "";
       equality_list.forEach((equality) => {
         let table_row = "<tr>";
         table_row += `<td class="center-text">${equality.country}</td>`;
@@ -132,8 +105,15 @@ app.get("/weg/:group", (req, res) => {
         table_row += `<td class="center-text">${equality.population}</td>`;
         table_row += "</tr>";
         table_body += table_row;
+        let data_row = "{";
+        data_row += `x:${equality.wei},`;
+        data_row += `y:${equality.ggpi},`;
+        data_row += `r:${Math.pow(equality.population, 1 / 6)}`;
+        data_row += "},";
+        data_string += data_row;
       });
       response = response.replace("$TABLE_DATA$", table_body);
+      response = response.replace("$PLOT_DATA$", data_string);
       res.status(200).type("html").send(response);
     })
     .catch((error) => {
@@ -151,6 +131,7 @@ app.get("/ggpg/:group", (req, res) => {
       let equality_list = results[0];
       let response = results[1];
       let table_body = "";
+      let data_string = "";
       equality_list.forEach((equality) => {
         let table_row = "<tr>";
         table_row += `<td class="center-text">${equality.country}</td>`;
@@ -163,8 +144,15 @@ app.get("/ggpg/:group", (req, res) => {
         table_row += `<td class="center-text">${equality.population}</td>`;
         table_row += "</tr>";
         table_body += table_row;
+        let data_row = "{";
+        data_row += `x:${equality.wei},`;
+        data_row += `y:${equality.ggpi},`;
+        data_row += `r:${Math.pow(equality.population, 1 / 6)}`;
+        data_row += "},";
+        data_string += data_row;
       });
       response = response.replace("$TABLE_DATA$", table_body);
+      response = response.replace("$PLOT_DATA$", data_string);
       res.status(200).type("html").send(response);
     })
     .catch((error) => {
@@ -182,6 +170,7 @@ app.get("/region/:region", (req, res) => {
       let equality_list = results[0];
       let response = results[1];
       let table_body = "";
+      let data_string = "";
       equality_list.forEach((equality) => {
         let table_row = "<tr>";
         table_row += `<td class="center-text">${equality.country}</td>`;
@@ -194,8 +183,15 @@ app.get("/region/:region", (req, res) => {
         table_row += `<td class="center-text">${equality.population}</td>`;
         table_row += "</tr>";
         table_body += table_row;
+        let data_row = "{";
+        data_row += `x:${equality.wei},`;
+        data_row += `y:${equality.ggpi},`;
+        data_row += `r:${Math.pow(equality.population, 1 / 6)}`;
+        data_row += "},";
+        data_string += data_row;
       });
       response = response.replace("$TABLE_DATA$", table_body);
+      response = response.replace("$PLOT_DATA$", data_string);
       res.status(200).type("html").send(response);
     })
     .catch((error) => {
