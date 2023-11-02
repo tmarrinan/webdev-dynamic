@@ -27,6 +27,18 @@ const db = new sqlite3.Database(
   }
 );
 
+const dbVis = new sqlite3.Database(
+  path.join(__dirname, "regions.sqlite3"),
+  sqlite3.OPEN_READONLY,
+  (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Successfully connected to database");
+    }
+  }
+);
+
 function dbSelect(query, params) {
   let p = new Promise((resolve, reject) => {
     db.all(query, params, (err, rows) => {
@@ -41,8 +53,21 @@ function dbSelect(query, params) {
   return p;
 }
 
+function dbVisSelect(query, params) {
+  let p = new Promise((resolve, reject) => {
+    dbVis.all(query, params, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        //console.log(rows);
+        resolve(rows);
+      }
+    });
+  });
+  return p;
+}
+
 app.get("/all", (req, res) => {
-  console.log("trying! 1");
   let p1 = dbSelect("SELECT * FROM Equality");
   let p2 = fs.promises.readFile(path.join(template, "search.html"), "utf-8");
   Promise.all([p1, p2])
@@ -80,7 +105,6 @@ app.get("/all", (req, res) => {
 });
 
 app.get("/weg/:group", (req, res) => {
-  console.log("trying!");
   let empowerment = req.params.group;
   let p1 = dbSelect("SELECT * FROM Equality WHERE weg = ?", [empowerment]);
   let p2 = fs.promises.readFile(
@@ -114,6 +138,7 @@ app.get("/weg/:group", (req, res) => {
       });
       response = response.replace("$TABLE_DATA$", table_body);
       response = response.replace("$PLOT_DATA$", data_string);
+      response = response.replace("$EMPOWERMENT$", empowerment);
       res.status(200).type("html").send(response);
     })
     .catch((error) => {
@@ -122,7 +147,6 @@ app.get("/weg/:group", (req, res) => {
 });
 
 app.get("/ggpg/:group", (req, res) => {
-  console.log("trying!");
   let parity = req.params.group;
   let p1 = dbSelect("SELECT * FROM Equality WHERE ggpg = ?", [parity]);
   let p2 = fs.promises.readFile(path.join(template, "parity.html"), "utf-8");
@@ -153,6 +177,7 @@ app.get("/ggpg/:group", (req, res) => {
       });
       response = response.replace("$TABLE_DATA$", table_body);
       response = response.replace("$PLOT_DATA$", data_string);
+      response = response.replace("$PARITY$", parity);
       res.status(200).type("html").send(response);
     })
     .catch((error) => {
@@ -161,16 +186,22 @@ app.get("/ggpg/:group", (req, res) => {
 });
 
 app.get("/region/:region", (req, res) => {
-  console.log("trying!");
   let region = req.params.region;
   let p1 = dbSelect("SELECT * FROM Equality WHERE region = ?", [region]);
   let p2 = fs.promises.readFile(path.join(template, "region.html"), "utf-8");
-  Promise.all([p1, p2])
+  let p3 = dbVisSelect("SELECT * FROM Region WHERE name = ?", [region]);
+  Promise.all([p1, p2, p3])
     .then((results) => {
       let equality_list = results[0];
       let response = results[1];
+      let regionPaths = results[2];
+      let path = "";
+      let regionName = region;
       let table_body = "";
       let data_string = "";
+      regionPaths.forEach((region) => {
+        path += region.path;
+      });
       equality_list.forEach((equality) => {
         let table_row = "<tr>";
         table_row += `<td class="center-text">${equality.country}</td>`;
@@ -192,6 +223,8 @@ app.get("/region/:region", (req, res) => {
       });
       response = response.replace("$TABLE_DATA$", table_body);
       response = response.replace("$PLOT_DATA$", data_string);
+      response = response.replace("$PATH$", path);
+      response = response.replace("$SRC$", regionName);
       res.status(200).type("html").send(response);
     })
     .catch((error) => {
