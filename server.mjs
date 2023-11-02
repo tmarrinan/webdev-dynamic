@@ -86,7 +86,7 @@ app.get('/sugarpercent/:category', (req, res) => {
             break;
     }
     // You don't need to perform a query with the candy name here since your queries don't use it.
-    let p1 = dbSelect('SELECT * FROM candy WHERE sugarpercent < ? AND sugarpercent >= ? ORDER BY sugarpercent',[sugarMax],[sugarMin]);
+    let p1 = dbSelect('SELECT * FROM candy WHERE sugarpercent < ? AND sugarpercent >= ? ORDER BY sugarpercent',[sugarMax,sugarMin]);
     let p2 = fs.promises.readFile(path.join(template, 'sugarpercent.html'), 'utf-8');
 
     Promise.all([p1, p2]).then(results => {
