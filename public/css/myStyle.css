@@ -1,7 +1,19 @@
 body {
-    background-color: orange;
+    background-color: rgb(249, 235, 145);
 }
 
-td, th {
-    text-align: center;
-}
+
+table {
+    border-collapse: collapse; /* This ensures that the border doesn't double up */
+    width: 50%; /* This sets the table to take up the full width of its container */
+  }
+  
+  th, td {
+    border: 1px solid black; /* This adds a black border around every cell */
+    padding: 1px; /* This adds some space between the cell content and the borders */
+    text-align: center; /* This centers the text in the cells */
+  }
+  
+  th {
+    background-color: lightblue; /* This gives a grey background to the header cells */
+  }

@@ -69,20 +69,20 @@ app.get('/sugarpercent/:category', (req, res) => {
     switch (category) {
         case 'low':
             sugarMin = 0;
-            sugarMax = 0.1; // Assuming 'low' is sugarpercent < 0.1
+            sugarMax = 0.3; // Assuming 'low' is sugarpercent < 0.1
             break;
         case 'medium':
-            sugarMin = 0.1
-            sugarMax = 0.3; // Assuming 'medium' is sugarpercent < 0.3
+            sugarMin = 0.3
+            sugarMax = 0.6; // Assuming 'medium' is sugarpercent < 0.3
             break;
         case 'high':
-            sugarMin = 0.3
-            sugarMax = 10; // Assuming 'high' is sugarpercent < 0.5
+            sugarMin = 0.6
+            sugarMax = 1; // Assuming 'high' is sugarpercent < 0.5
             break;
         default:
             // Handle unknown category or set a default
             sugarMin = 0;
-            sugarMax = 0.1;
+            sugarMax = 0.3;
             break;
     }
     // You don't need to perform a query with the candy name here since your queries don't use it.
@@ -96,9 +96,11 @@ app.get('/sugarpercent/:category', (req, res) => {
         
         // Now, insert the data from the database into the template.
         // Assuming you want to display the results from p1 in a table.
-        let table_body = results[0].map(candy => { // Use map to transform each row into an HTML row.
+        let table_body = results[0].map((candy,index) => { // Use map to transform each row into an HTML row.
             const imageName = slugify(candy.competitorname) + '.jpg';
             const imagePath = `/images/${imageName}`;
+            const imageTag = index === 0 ? `<img src="${imagePath}" alt="${imageName}" style="max-width:100px;max-height:100px;">` : '';
+            response = response.replace('$$FEATURED_IMAGE$$', imageTag);
             return `<tr>
                 <td>${candy.competitorname}</td>
                 <td>${parseFloat(candy.sugarpercent).toFixed(2)+'%'}</td>
@@ -107,10 +109,11 @@ app.get('/sugarpercent/:category', (req, res) => {
                 <td>${convertToYesNo(candy.peanutyalmondy)}</td>
                 <td>${convertToYesNo(candy.caramel)}</td>
                 <td>${convertToYesNo(candy.pluribus)}</td>
-                <td><img src="${imagePath}" alt="Image of ${imagePath}" style="max-width:0.3 rem;max-height:0.3 rem;"></td>
+                <td><img src="${imagePath}" alt="${imageName}" style="max-width:0.3 rem;max-height:0.3 rem;"></td>
             </tr>`;
         }).join(''); // Join all the strings into one big string.
         response = response.replace('$$TABLE_BODY$$', table_body); // Replace the table body placeholder.
+      //  response = response.replace('$$FEATURED_IMAGE$$', imageTag);
 
         res.status(200).type('html').send(response); // Send the response.
     }).catch((error) => {
@@ -121,21 +124,47 @@ app.get('/sugarpercent/:category', (req, res) => {
 
 
 //WIN PERCENT
-app.get('/winpercent', (req, res) => {
+app.get('/winpercent/:category', (req, res) => {
+
+    let category = req.params.category;
+    let winMin;
+    let winMax;
+    
+    switch (category) {
+        case 'low':
+            winMin = 0;
+            winMax = 33; // Assuming 'low' is sugarpercent < 0.1
+            break;
+        case 'medium':
+            winMin = 33
+            winMax = 66; // Assuming 'medium' is sugarpercent < 0.3
+            break;
+        case 'high':
+            winMin = 66
+            winMax = 100; // Assuming 'high' is sugarpercent < 0.5
+            break;
+        default:
+            // Handle unknown category or set a default
+            winMin = 66;
+            winMax = 100;
+            break;
+    }
     // You don't need to perform a query with the candy name here since your queries don't use it.
-    let p1 = dbSelect('SELECT * FROM candy WHERE sugarpercent < 0.25 ORDER BY winpercent DESC LIMIT 10');
-    let p2 = dbSelect('SELECT * FROM candy WHERE chocolate == 1 ORDER BY winpercent DESC LIMIT 10');
-    let p3 = dbSelect('SELECT * FROM candy WHERE fruity == 1 ORDER BY winpercent DESC LIMIT 10');
-    let p4 = fs.promises.readFile(path.join(template, 'winpercent.html'), 'utf-8');
+    let p1 = dbSelect('SELECT * FROM candy WHERE sugarpercent < ? AND sugarpercent >= ? ORDER BY sugarpercent',[winMax,winMin]);
+    let p2 = fs.promises.readFile(path.join(template, 'winpercent.html'), 'utf-8');
 
-    Promise.all([p1, p2, p3, p4]).then(results => {
+    Promise.all([p1, p2]).then(results => {
         // This is where you read the template and insert the data
-        let template = results[3]; // This is your HTML template as a string.
-        let response = template.replace('$$CANDY_NAME$$', req.params.name); // Replace placeholder with candy name from URL.
-
+        let template = results[1]; // This is your HTML template as a string.
+        let response = template.replace('$$CATEGORY_NAME$$', category); // Replace placeholder with candy name from URL.
+        
         // Now, insert the data from the database into the template.
         // Assuming you want to display the results from p1 in a table.
-        let table_body = results[1].map(candy => { // Use map to transform each row into an HTML row.
+        let table_body = results[0].map((candy,index) => { // Use map to transform each row into an HTML row.
+            const imageName = slugify(candy.competitorname) + '.jpg';
+            const imagePath = `/images/${imageName}`;
+            const imageTag = index === 0 ? `<img src="${imagePath}" alt="${imageName}" style="max-width:100px;max-height:100px;">` : '';
+            response = response.replace('$$FEATURED_IMAGE$$', imageTag);
             return `<tr>
                 <td>${candy.competitorname}</td>
                 <td>${parseFloat(candy.winpercent).toFixed(1)+'%'}</td>
@@ -144,10 +173,11 @@ app.get('/winpercent', (req, res) => {
                 <td>${convertToYesNo(candy.peanutyalmondy)}</td>
                 <td>${convertToYesNo(candy.caramel)}</td>
                 <td>${convertToYesNo(candy.pluribus)}</td>
+                <td><img src="${imagePath}" alt="${imageName}" style="max-width:0.3 rem;max-height:0.3 rem;"></td>
             </tr>`;
         }).join(''); // Join all the strings into one big string.
-
         response = response.replace('$$TABLE_BODY$$', table_body); // Replace the table body placeholder.
+      //  response = response.replace('$$FEATURED_IMAGE$$', imageTag);
 
         res.status(200).type('html').send(response); // Send the response.
     }).catch((error) => {
@@ -158,21 +188,47 @@ app.get('/winpercent', (req, res) => {
 
 
 //PRICE PERCENT
-app.get('/pricepercent', (req, res) => {
+app.get('/pricepercent/:category', (req, res) => {
+
+    let category = req.params.category;
+    let priceMin;
+    let priceMax;
+    
+    switch (category) {
+        case 'low':
+            priceMin = 0;
+            priceMax = 0.3; // Assuming 'low' is sugarpercent < 0.1
+            break;
+        case 'medium':
+            priceMin = 0.3
+            priceMax = 0.6; // Assuming 'medium' is sugarpercent < 0.3
+            break;
+        case 'high':
+            priceMin = 0.6
+            priceMax = 1; // Assuming 'high' is sugarpercent < 0.5
+            break;
+        default:
+            // Handle unknown category or set a default
+            priceMin = 0;
+            priceMax = 0.3;
+            break;
+    }
     // You don't need to perform a query with the candy name here since your queries don't use it.
-    let p1 = dbSelect('SELECT * FROM candy WHERE sugarpercent < 0.25 ORDER BY winpercent DESC LIMIT 10');
-    let p2 = dbSelect('SELECT * FROM candy WHERE chocolate == 1 ORDER BY winpercent DESC LIMIT 10');
-    let p3 = dbSelect('SELECT * FROM candy WHERE fruity == 1 ORDER BY winpercent DESC LIMIT 10');
-    let p4 = fs.promises.readFile(path.join(template, 'pricepercent.html'), 'utf-8');
+    let p1 = dbSelect('SELECT * FROM candy WHERE sugarpercent < ? AND sugarpercent >= ? ORDER BY sugarpercent',[priceMax,priceMin]);
+    let p2 = fs.promises.readFile(path.join(template, 'pricepercent.html'), 'utf-8');
 
-    Promise.all([p1, p2, p3, p4]).then(results => {
+    Promise.all([p1, p2]).then(results => {
         // This is where you read the template and insert the data
-        let template = results[3]; // This is your HTML template as a string.
-        let response = template.replace('$$CANDY_NAME$$', req.params.name); // Replace placeholder with candy name from URL.
-
+        let template = results[1]; // This is your HTML template as a string.
+        let response = template.replace('$$CATEGORY_NAME$$', category); // Replace placeholder with candy name from URL.
+        
         // Now, insert the data from the database into the template.
         // Assuming you want to display the results from p1 in a table.
-        let table_body = results[2].map(candy => { // Use map to transform each row into an HTML row.
+        let table_body = results[0].map((candy,index) => { // Use map to transform each row into an HTML row.
+            const imageName = slugify(candy.competitorname) + '.jpg';
+            const imagePath = `/images/${imageName}`;
+            const imageTag = index === 0 ? `<img src="${imagePath}" alt="${imageName}" style="max-width:100px;max-height:100px;">` : '';
+            response = response.replace('$$FEATURED_IMAGE$$', imageTag);
             return `<tr>
                 <td>${candy.competitorname}</td>
                 <td>${parseFloat(candy.pricepercent).toFixed(2)+'%'}</td>
@@ -181,10 +237,11 @@ app.get('/pricepercent', (req, res) => {
                 <td>${convertToYesNo(candy.peanutyalmondy)}</td>
                 <td>${convertToYesNo(candy.caramel)}</td>
                 <td>${convertToYesNo(candy.pluribus)}</td>
+                <td><img src="${imagePath}" alt="${imageName}" style="max-width:0.3 rem;max-height:0.3 rem;"></td>
             </tr>`;
         }).join(''); // Join all the strings into one big string.
-
         response = response.replace('$$TABLE_BODY$$', table_body); // Replace the table body placeholder.
+      //  response = response.replace('$$FEATURED_IMAGE$$', imageTag);
 
         res.status(200).type('html').send(response); // Send the response.
     }).catch((error) => {
