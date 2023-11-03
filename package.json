@@ -4,14 +4,26 @@
     "version": "1.0.0",
     "author": {
         "name": "Josh Kahlbaugh",
-        "email": "Kahl7683@stthomas.edu"
+        "email": "kahl7683@stthomas.edu"
     },
     "contributors": [
-        "Josh Kahlbaugh",
-        "Omar Alshaali",
-        "Jasper Olson"
+        {
+          "name": "Josh Kahlbaugh",
+          "email": "kahl7683@stthomas.edu"
+        },
+        {
+          "name": "Omar Alshaali",
+          "email": "alsh4255@stthomas.edu"
+        },
+        {
+          "name": "Jasper Olson",
+          "email": "olso3797@sthomas.edu"
+        }
     ],
-    "repository": {},
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/JoshK710/dynamic-webserver"
+    },
     "dependencies": {
         "bootstrap": "^5.3.2",
         "chart.js": "^4.4.0",
