@@ -114,6 +114,14 @@ app.get("/weg/:group", (req, res) => {
   Promise.all([p1, p2])
     .then((results) => {
       let equality_list = results[0];
+      if (equality_list.length === 0) {
+        res
+          .status(404)
+          .type("txt")
+          .send(
+            `${empowerment} is not a Women's Empowerment Group in the database!`
+          );
+      }
       let response = results[1];
       let table_body = "";
       let data_string = "";
@@ -153,6 +161,14 @@ app.get("/ggpg/:group", (req, res) => {
   Promise.all([p1, p2])
     .then((results) => {
       let equality_list = results[0];
+      if (equality_list.length === 0) {
+        res
+          .status(404)
+          .type("txt")
+          .send(
+            `${parity} is not a Global Gender Parity Group in the database!`
+          );
+      }
       let response = results[1];
       let table_body = "";
       let data_string = "";
@@ -193,6 +209,12 @@ app.get("/region/:region", (req, res) => {
   Promise.all([p1, p2, p3])
     .then((results) => {
       let equality_list = results[0];
+      if (equality_list.length === 0) {
+        res
+          .status(404)
+          .type("txt")
+          .send(`${region} is not a region in the database!`);
+      }
       let response = results[1];
       let regionPaths = results[2];
       let path = "";
