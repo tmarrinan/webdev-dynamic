@@ -1,0 +1,36 @@
+th {
+  text-align: center;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.sorting {
+  background-color: lightblue;
+  height: 3em;
+}
+
+.nav-btn {
+  background-color: lightcyan;
+  height: 3em;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+button {
+  background-color: lightskyblue;
+  color: white;
+  height: 2em;
+  width: 7em;
+  margin: 1em;
+  /* padding: 1.5em; */
+  text-align: center;
+  border-radius: 1em;
+  font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+}
+
+button:hover {
+  color: lightskyblue;
+  background-color: lightgrey;
+}

@@ -3,13 +3,31 @@
     "description": "Dynamic Server",
     "version": "1.0.0",
     "author": {
-        "name": "",
-        "email": ""
+        "name": "Josh Kahlbaugh",
+        "email": "kahl7683@stthomas.edu"
     },
     "contributors": [
+        {
+          "name": "Josh Kahlbaugh",
+          "email": "kahl7683@stthomas.edu"
+        },
+        {
+          "name": "Omar Alshaali",
+          "email": "alsh4255@stthomas.edu"
+        },
+        {
+          "name": "Jasper Olson",
+          "email": "olso3797@sthomas.edu"
+        }
     ],
-    "repository": {},
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/JoshK710/dynamic-webserver"
+    },
     "dependencies": {
+        "bootstrap": "^5.3.2",
+        "chart.js": "^4.4.0",
+        "cubejs": "^1.3.2",
         "express": "^4.18.2",
         "sqlite3": "^5.1.6"
     }
