@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="/css/myStyle.css"/>
     </head>
     <body>
-        <div class="navbar">
+        <div style="text-align:center;" class="navbar">
             <li><a href="/">Home</a></li>
             <li><a href="/winpercent/high">Popularity</a></li>
             <li><a href="/sugarpercent/low">Sugar Percent</a></li>
@@ -43,5 +43,9 @@
                 $$TABLE_BODY$$
             </tbody>
         </table>
+        <br>
+        <a style="text-align: right;" href="/sugarpercent/$$CATEGORY_NAME$$"><button style="float: left;">Previous</button></a>
+        <a style="text-align: right;" href="/winpercent/$$CATEGORY_NAME$$"><button style="float: right;">Next</button></a>
+        <br>
     </body>
 </html>

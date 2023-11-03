@@ -251,6 +251,7 @@ app.get('/pricepercent/:category', (req, res) => {
 db.all(query1,(err,rows)=>{
     if ((err)=>{
         console.log(err)
+        res.status(404).send("Error finding correct chocolate")
     });
     else{            //res.json(rows)
         // rows.forEach(row => console.log(`${row.mfr} is ${row.name} `))
@@ -264,6 +265,7 @@ db.all(query1,(err,rows)=>{
 db.all(query2,(err,rows)=>{
     if ((err)=>{
         console.log(err)
+        res.status(404).send("Error finding correct chocolate")
     });
     else{            //res.json(rows)
         // rows.forEach(row => console.log(`${row.mfr} is ${row.name} `))
@@ -277,6 +279,7 @@ db.all(query2,(err,rows)=>{
 db.all(query3,(err,rows)=>{
     if ((err)=>{
         console.log(err)
+        res.status(404).send("Error finding correct chocolate")
     });
     else{            //res.json(rows)
         // rows.forEach(row => console.log(`${row.mfr} is ${row.name} `))
