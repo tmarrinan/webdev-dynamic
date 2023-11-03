@@ -157,12 +157,16 @@ app.get('/winpercent/:category', (req, res) => {
         // This is where you read the template and insert the data
         let template = results[1]; // This is your HTML template as a string.
         let response = template.replace('$$CATEGORY_NAME$$', category); // Replace placeholder with candy name from URL.
-        
+        let nameList = []
+        let namesList = []
+        let percList = []
         // Now, insert the data from the database into the template.
         // Assuming you want to display the results from p1 in a table.
         let table_body = results[0].map((candy,index) => { // Use map to transform each row into an HTML row.
             const imageName = slugify(candy.competitorname) + '.jpg';
             const imagePath = `/images/${imageName}`;
+            nameList.push(candy.competitorname);
+            percList.push(parseFloat(candy.winpercent).toFixed(1))
             const imageTag = index === 0 ? `<img src="${imagePath}" alt="${imageName}" style="max-width:100px;max-height:100px;">` : '';
             response = response.replace('$$FEATURED_IMAGE$$', imageTag);
             return `<tr>
@@ -175,9 +179,13 @@ app.get('/winpercent/:category', (req, res) => {
                 <td>${convertToYesNo(candy.pluribus)}</td>
             </tr>`;
         }).join(''); // Join all the strings into one big string.
-        response = response.replace('$$TABLE_BODY$$', table_body); // Replace the table body placeholder.
+        for(let i=1; i<nameList.length;i++){
+            namesList.push(i)
+        }
+        response = response.replaceAll('$$NAMES$$', namesList);
+        response = response.replaceAll('$$VALUES$$', percList);
+        response = response.replaceAll('$$TABLE_BODY$$', table_body); // Replace the table body placeholder.
       //  response = response.replace('$$FEATURED_IMAGE$$', imageTag);
-
         res.status(200).type('html').send(response); // Send the response.
     }).catch((error) => {
         console.error(error);
@@ -240,7 +248,6 @@ app.get('/pricepercent/:category', (req, res) => {
         }).join(''); // Join all the strings into one big string.
         response = response.replace('$$TABLE_BODY$$', table_body); // Replace the table body placeholder.
       //  response = response.replace('$$FEATURED_IMAGE$$', imageTag);
-
         res.status(200).type('html').send(response); // Send the response.
     }).catch((error) => {
         console.error(error);
@@ -251,7 +258,6 @@ app.get('/pricepercent/:category', (req, res) => {
 db.all(query1,(err,rows)=>{
     if ((err)=>{
         console.log(err)
-        res.status(404).send("Error finding correct chocolate")
     });
     else{            //res.json(rows)
         // rows.forEach(row => console.log(`${row.mfr} is ${row.name} `))
@@ -265,7 +271,6 @@ db.all(query1,(err,rows)=>{
 db.all(query2,(err,rows)=>{
     if ((err)=>{
         console.log(err)
-        res.status(404).send("Error finding correct chocolate")
     });
     else{            //res.json(rows)
         // rows.forEach(row => console.log(`${row.mfr} is ${row.name} `))
@@ -279,7 +284,6 @@ db.all(query2,(err,rows)=>{
 db.all(query3,(err,rows)=>{
     if ((err)=>{
         console.log(err)
-        res.status(404).send("Error finding correct chocolate")
     });
     else{            //res.json(rows)
         // rows.forEach(row => console.log(`${row.mfr} is ${row.name} `))
@@ -295,3 +299,66 @@ db.all(query3,(err,rows)=>{
 app.listen(port, () =>{
     console.log('Now listening on port'+port);
 });
+
+function graphDraw(names, values){
+
+    var graphtrace = {
+        type: 'scatter',
+        x: names,
+        y: values,
+        mode: 'markers',
+        name: '',
+        marker:{
+            color: 'rgb(255, 0, 0)',
+            line:{
+                color: 'rgb(0,0,255)',
+                width:1,
+            },
+            symbol:'circle',
+            size:16
+        }
+    };
+
+    var layout = {
+        title: 'Candy Graph',
+        xaxis: {
+          showgrid: false,
+          showline: true,
+          linecolor: 'rgb(102, 102, 102)',
+          titlefont: {
+            font: {
+              color: 'rgb(204, 204, 204)'
+            }
+          },
+          tickfont: {
+            font: {
+              color: 'rgb(102, 102, 102)'
+            }
+          },
+          autotick: false,
+          dtick: 10,
+          ticks: 'outside',
+          tickcolor: 'rgb(102, 102, 102)'
+        },
+        margin: {
+          l: 140,
+          r: 40,
+          b: 50,
+          t: 80
+        },
+        legend: {
+          font: {
+            size: 10,
+          },
+          yanchor: 'middle',
+          xanchor: 'right'
+        },
+        width: 600,
+        height: 600,
+        paper_bgcolor: 'rgb(254, 247, 234)',
+        plot_bgcolor: 'rgb(254, 247, 234)',
+        hovermode: 'closest'
+      };
+      
+      return Plotly.newPlot("myGraph", graphtrace, layout);
+};
