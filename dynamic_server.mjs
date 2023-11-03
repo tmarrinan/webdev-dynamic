@@ -59,7 +59,7 @@ function dbVisSelect(query, params) {
       if (err) {
         reject(err);
       } else {
-        //console.log(rows);
+        console.log(rows);
         resolve(rows);
       }
     });
