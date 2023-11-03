@@ -7,17 +7,25 @@
         <link rel="stylesheet" href="/css/myStyle.css"/>
     </head>
     <body>
-        <h1>Sugar Percentage</h1>
-        <a href="/winpercent/low">Win Percentage</a>
-        <a href="/sugarpercent/low">Sugar Percentage</a>
-        <a href="/pricepercent/low">Price Percentage</a>
-        <a href="/">Home</a>
-        <h1>Showing results for: $$CATEGORY_NAME$$</h1>
-        <a href="/sugarpercent/low">low</a>
-        <a href="/sugarpercent/medium">medium</a>
-        <a href="/sugarpercent/high">high</a>
+        <div class="navbar">
+            <li><a href="/">Home</a></li>
+            <li><a href="/winpercent/high">Popularity</a></li>
+            <li><a href="/sugarpercent/low">Sugar Percent</a></li>
+            <li><a href="/pricepercent/low">Price Percent</a></li>
+        </div>
+        <h1>Sugar Percent</h1>
+
+        <h2>Results for $$CATEGORY_NAME$$ sugar</h2>
+        <div class="prevNext">
+            <a href="/sugarpercent/low">low</a>
+            <a href="/sugarpercent/medium">medium</a>
+            <a href="/sugarpercent/high">high</a>
+        </div>div>
         <div id="featured-image-container">
             $$FEATURED_IMAGE$$
+        </div>
+        <div id="image-caption">
+            $$IMAGE_CAPTION$$
         </div>
         <table>
             <thead>
@@ -29,7 +37,6 @@
 					<th>Nutty</th>
                     <th>Caramel</th>
                     <th>Packs of Many</th>
-                    <th>Image</th>
                 </tr>
             </thead>
             <tbody>

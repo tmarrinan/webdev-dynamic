@@ -99,8 +99,9 @@ app.get('/sugarpercent/:category', (req, res) => {
         let table_body = results[0].map((candy,index) => { // Use map to transform each row into an HTML row.
             const imageName = slugify(candy.competitorname) + '.jpg';
             const imagePath = `/images/${imageName}`;
-            const imageTag = index === 0 ? `<img src="${imagePath}" alt="${imageName}" style="max-width:100px;max-height:100px;">` : '';
+            const imageTag = index === 0 ? `<img src="${imagePath}" alt="Image of ${candy.competitorname}" style="max-width:100px;max-height:100px;">` : '';
             response = response.replace('$$FEATURED_IMAGE$$', imageTag);
+            response = response.replace('$$IMAGE_CAPTION$$', candy.competitorname);
             return `<tr>
                 <td>${candy.competitorname}</td>
                 <td>${parseFloat(candy.sugarpercent).toFixed(2)+'%'}</td>
@@ -109,7 +110,6 @@ app.get('/sugarpercent/:category', (req, res) => {
                 <td>${convertToYesNo(candy.peanutyalmondy)}</td>
                 <td>${convertToYesNo(candy.caramel)}</td>
                 <td>${convertToYesNo(candy.pluribus)}</td>
-                <td><img src="${imagePath}" alt="${imageName}" style="max-width:0.3 rem;max-height:0.3 rem;"></td>
             </tr>`;
         }).join(''); // Join all the strings into one big string.
         response = response.replace('$$TABLE_BODY$$', table_body); // Replace the table body placeholder.
@@ -133,24 +133,24 @@ app.get('/winpercent/:category', (req, res) => {
     switch (category) {
         case 'low':
             winMin = 0;
-            winMax = 33; // Assuming 'low' is sugarpercent < 0.1
+            winMax = 40; // Assuming 'low' is sugarpercent < 0.1
             break;
         case 'medium':
-            winMin = 33
-            winMax = 66; // Assuming 'medium' is sugarpercent < 0.3
+            winMin = 40
+            winMax = 60; // Assuming 'medium' is sugarpercent < 0.3
             break;
         case 'high':
-            winMin = 66
+            winMin = 60
             winMax = 100; // Assuming 'high' is sugarpercent < 0.5
             break;
         default:
             // Handle unknown category or set a default
-            winMin = 66;
+            winMin = 60;
             winMax = 100;
             break;
     }
     // You don't need to perform a query with the candy name here since your queries don't use it.
-    let p1 = dbSelect('SELECT * FROM candy WHERE sugarpercent < ? AND sugarpercent >= ? ORDER BY sugarpercent',[winMax,winMin]);
+    let p1 = dbSelect('SELECT * FROM candy WHERE winpercent < ? AND winpercent >= ? ORDER BY winpercent DESC',[winMax,winMin]);
     let p2 = fs.promises.readFile(path.join(template, 'winpercent.html'), 'utf-8');
 
     Promise.all([p1, p2]).then(results => {
@@ -173,7 +173,6 @@ app.get('/winpercent/:category', (req, res) => {
                 <td>${convertToYesNo(candy.peanutyalmondy)}</td>
                 <td>${convertToYesNo(candy.caramel)}</td>
                 <td>${convertToYesNo(candy.pluribus)}</td>
-                <td><img src="${imagePath}" alt="${imageName}" style="max-width:0.3 rem;max-height:0.3 rem;"></td>
             </tr>`;
         }).join(''); // Join all the strings into one big string.
         response = response.replace('$$TABLE_BODY$$', table_body); // Replace the table body placeholder.
@@ -214,7 +213,7 @@ app.get('/pricepercent/:category', (req, res) => {
             break;
     }
     // You don't need to perform a query with the candy name here since your queries don't use it.
-    let p1 = dbSelect('SELECT * FROM candy WHERE sugarpercent < ? AND sugarpercent >= ? ORDER BY sugarpercent',[priceMax,priceMin]);
+    let p1 = dbSelect('SELECT * FROM candy WHERE pricepercent < ? AND pricepercent >= ? ORDER BY pricepercent',[priceMax,priceMin]);
     let p2 = fs.promises.readFile(path.join(template, 'pricepercent.html'), 'utf-8');
 
     Promise.all([p1, p2]).then(results => {
@@ -237,7 +236,6 @@ app.get('/pricepercent/:category', (req, res) => {
                 <td>${convertToYesNo(candy.peanutyalmondy)}</td>
                 <td>${convertToYesNo(candy.caramel)}</td>
                 <td>${convertToYesNo(candy.pluribus)}</td>
-                <td><img src="${imagePath}" alt="${imageName}" style="max-width:0.3 rem;max-height:0.3 rem;"></td>
             </tr>`;
         }).join(''); // Join all the strings into one big string.
         response = response.replace('$$TABLE_BODY$$', table_body); // Replace the table body placeholder.

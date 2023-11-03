@@ -17,3 +17,53 @@ table {
   th {
     background-color: lightblue; /* This gives a grey background to the header cells */
   }
+  .navbar a {   
+    text-decoration: none; 
+    list-style-type: none;
+    text-align: center;
+
+    color: white;
+    padding-left: 5rem;
+    padding-right: 5rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    background-color: #173860;
+    border: .5rem;
+    border-color:#000000;
+    border-radius: 10%;
+    }
+
+  .navbar a:hover {
+      background-color: #5090dd;
+   }
+
+   .navbar div{
+    text-decoration: none; 
+    list-style-type: none;
+  
+   }
+   .navbar li {
+    margin: .2rem; 
+    display: inline-flex;
+    float: center;
+
+}
+
+h1 {
+    text-align: center;
+    font-size: 3.5rem;
+}
+h2 {
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.prevNext{
+    display: flex;
+    justify-content: center; /* Centers content horizontally */
+    align-items: center; /* Centers content vertically if the container has a specific height */
+}
+
+.prevNext a{
+    padding: 0.5rem;
+}
