@@ -67,10 +67,22 @@
               {
                 data: [$PLOT_DATA$],
                 backgroundColor: "rgb(255, 99, 132)",
+                xAxisID: "x-axis",
+                yAxisID: "y-axis",
               },
             ],
           }),
           options: {
+            scales: {
+              "x-axis": {
+                min: 0,
+                max: 1,
+              },
+              "y-axis": {
+                min: 0,
+                max: 1,
+              },
+            },
             plugins: {
               legend: {
                 display: false,
