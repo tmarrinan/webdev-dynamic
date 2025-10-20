@@ -1,2 +1,3 @@
 # Web Dev - Dynamic Server
-Dynamic Server Starter Code for Web Development Course
+
+Dynamic Server project for Web Development Course by Anastasia Iogova, Carter VanHaren, and Zoe Thoma
