@@ -1,0 +1,9 @@
+
+table {
+    border-collapse: collapse; 
+}
+
+th, td {
+border: 1px solid black; /* Thin border for cells */
+padding: 8px; /* Adds spacing inside cells */
+}

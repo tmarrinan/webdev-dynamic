@@ -10,10 +10,29 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 const port = 8081;
 const root = path.join(__dirname, 'public');
 const template = path.join(__dirname, 'templates');
-const cities = ['Minneapolis', 'Saint Paul', 'Rochester', 'Duluth', 'Bloomington'];
+let cities = [];
 
 let app = express();
 app.use(express.static(root));
+
+const db = new sqlite3.Database('./data.sqlite3', sqlite3.OPEN_READONLY, (err) =>{
+    if(err){
+        console.log('Error connecting to database');
+    }
+    else{
+        console.log('Sucessfully connected to database');
+
+        //Get list of city names
+        db.all('SELECT DISTINCT city FROM Weather', [], (err, rows) => {
+            if (err) {
+                console.error('DB error');
+            }else{
+            cities = rows.map(r => r.city).sort();
+            console.log('Loaded cities:', cities);
+            }
+        });
+    }
+});
 
 
 
@@ -47,7 +66,6 @@ app.get('/', (req, res) => {
         }
     });
 });
-
 
 
 // Erin
@@ -94,21 +112,34 @@ app.get('/precipitation/:city', (req, res) => {
 // Kristina
 app.get('/wind/:city', (req, res) => {
     console.log('### city '+req.params.city);
-    let json = null;
-    let mfr = null;
-    let html = null;
+    let sql = 'SELECT year, avg_wind_speed FROM Weather WHERE city = ?';
+    let city = req.params.city;
 
+    db.all(sql, [city], (err, rows) =>{
+        if(err){
+            res.status(404).type('txt').send('Error: ' + city + ' wind data not found');
 
-    fs.readFile(path.join(template, 'wind.html'), {encoding: 'utf8'}, (err, data) => {
-        console.log('### read wind html');
-        if (err) {
-            res.status(404).type('text/plain').send('Error: file not found');
-        } else {
-            html = data.toString();
-            html = html.replace('$$$ CITY $$$', req.params.city);
-            res.status(200).type('html').send(html);
+        } else{
+            fs.readFile(path.join(template, 'wind.html'), {encoding: 'utf8'}, (err, data) => {
+                if (err) {
+                    res.status(404).type('text/plain').send('Error:' + city + ' Wind not found');
+                } else {
+
+                    console.log('### read wind html');
+
+                    let windTable = '';
+                    for(let i=0; i<rows.length;i++){
+                        windTable += '<tr><td>' + rows[i].year + '</td>';
+                        windTable += '<td>' + rows[i].avg_wind_speed + '</td></tr>'; 
+                    }
+
+                    let response = data.replace('$$$CITY$$$', city);
+                    response = response.replace('$$$WIND_TABLE$$$', windTable);
+                    res.status(200).type('html').send(response);
+                }
+            });
         }
-    });
+    })
 });
 
 
