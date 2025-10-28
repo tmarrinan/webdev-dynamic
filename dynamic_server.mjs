@@ -1,6 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as url from 'node:url';
+import {Canvas} from 'skia-canvas';
 
 import { default as express } from 'express'; //npm install express;
 import { default as sqlite3 } from 'sqlite3'; //npm install sqlite3;
@@ -133,8 +134,15 @@ app.get('/wind/:city', (req, res) => {
                         windTable += '<td>' + rows[i].avg_wind_speed + '</td></tr>'; 
                     }
 
+                    //To create graph
+                    const years = JSON.stringify(rows.map(r => r.year));
+                    const speeds = JSON.stringify(rows.map(r => r.avg_wind_speed));
+
                     let response = data.replace('$$$CITY$$$', city);
                     response = response.replace('$$$WIND_TABLE$$$', windTable);
+                    response = response.replace('$$$YEARS$$$', years);
+                    response = response.replace('$$$SPEEDS$$$', speeds);
+
                     res.status(200).type('html').send(response);
                 }
             });

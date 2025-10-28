@@ -9,7 +9,9 @@
     "contributors": [],
     "repository": {},
     "dependencies": {
+        "chart.js": "^4.5.1",
         "express": "^5.1.0",
+        "skia-canvas": "^3.0.8",
         "sqlite3": "^5.1.7"
     }
 }
