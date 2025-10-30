@@ -150,16 +150,16 @@ app.get('/states', (req,res) => {
       res.status(500).type('txt').send('SQL Error');
     }
     else {
-            fs.readFile(path.join(template, "states.html"),{encoding: 'utf8'}, (err, data) => {
+      fs.readFile(path.join(template, "states.html"),{encoding: 'utf8'}, (err, data) => {
         if (err) {
-        return res.status(500).send("Error reading template file");
-      }
+          return res.status(500).send("Error reading template file");
+        }
         let table = `
           <table style="width:100%; text-align: left;">
             <thead>
               <tr>
                 <th style="border-bottom: 2px solid rgb(221, 221, 221);">State</th>
-                <th style="border-bottom: 2px solid rgb(221, 221, 221);">Annual Temperature Change (°C)</th>
+                <th style="border-bottom: 2px solid rgb(221, 221, 221);">Annual Temperature Change (°C) (1895-2019)</th>
               </tr>
             </thead>
             <tbody> 
@@ -253,7 +253,7 @@ app.get('/states/:state', (req, res) => {
 
       let content = `
         <h2>${row.STNAME}</h2>
-        <p>Average Annual Temperature Change: <strong>${Number(row.annual).toFixed(3)}°C</strong></p>
+        <p>Average Annual Temperature Change (1895-2019): <strong>${Number(row.annual).toFixed(3)}°C</strong></p>
         <p><a href="/states">Back to all states</a></p>
       `;
 
