@@ -23,33 +23,7 @@ const db = new sqlite3.Database('./climateChange.db', sqlite3.OPEN_READONLY, (er
   }
 });
 
-// app.listen(port, (req, res) => {
-//   console.log('Now listening on port ' + port);
-    
-//   let sql = 'SELECT * FROM Spring';
-//   console.log(sql);
-//   db.all(sql, [], (err, rows) => {
-//     if (err) {
-//       res.status(500).type('txt').send('SQL Error');
-//     }
-//     else {
-//       fs.readFile(path.join(template, "seasons.html"),{encoding: 'utf8'}, (err, data) => {
-//         if (err) {
-//         return res.status(500).send("Error reading template file");
-//       }
-//       let mfr_list = '';
-//       for(let i =0; i < rows.length; i++) {
-//         mfr_list += '<li><a href="seasons/' + rows[i].id + '>';
-//         mfr_list += rows[i].name + '"<a/><li>';
-//       }
-//       let response = data.replace('$$$SEASONS_HEADERS$$$', mfr_list);
-//       res.status(200).type('html').send(response);
-//       });
-//     }
-//   })
-// });
-
-app.get('/seasons.html', (req, res) => {
+app.get('/seasons', (req, res) => {
   console.log('Now listening on port ' + port);
  const imageMap = {
     Spring: '/springImg.jpg',
