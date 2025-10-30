@@ -6,7 +6,7 @@
         "name": "",
         "email": ""
     },
-    "contributors": [],
+    "contributors": ["Kayla Olivas"],
     "repository": {},
     "dependencies": {
         "express": "^5.1.0",
