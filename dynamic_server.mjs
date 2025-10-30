@@ -135,14 +135,6 @@ console.log("HTML generated:", list);
   })
 });
 
-
-function slugify(s) {
-  return String(s).toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
-}
-function unslugify(slug) {
-  return String(slug).replace(/-/g, ' ');
-}
-
 app.get('/states', (req,res) => {
   let sql = `SELECT STNAME, 
             AVG(Annual) AS annual 
