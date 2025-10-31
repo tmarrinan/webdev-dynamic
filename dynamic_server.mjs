@@ -238,6 +238,140 @@ app.get('/states/:state', (req, res) => {
 });
 
 
+// ---------------- COUNTIES ----------------
+
+// Shared queries
+const sqlAnnual = `
+  SELECT CTYNAME, STNAME, MAX(CAST(Annual AS REAL)) AS Annual
+  FROM climateChange
+  GROUP BY CTYNAME, STNAME
+  ORDER BY Annual DESC
+  LIMIT 5;
+`;
+
+const sqlDiff = `
+  SELECT CTYNAME, STNAME,
+         MAX(CAST(Summer AS REAL) - CAST(Winter AS REAL)) AS Diff
+  FROM climateChange
+  GROUP BY CTYNAME, STNAME
+  ORDER BY Diff DESC
+  LIMIT 5;
+`;
+
+const countyImageMap = {
+  Table: '/countiesTable.jpg',
+  Chart: '/countiesChart.jpg'
+};
+
+const countyAltMap = {
+  Table: 'Map of U.S. counties with warming trends',
+  Chart: 'Bar chart illustration of county climate change data'
+};
+
+// TABLE PAGE
+app.get('/counties/table', (req, res) => {
+  db.all(sqlAnnual, [], (err, rowsAnnual) => {
+    if (err) return res.status(500).type('txt').send('SQL Error (Annual)');
+    if (!rowsAnnual || rowsAnnual.length === 0) {
+      return res.status(404).type('txt').send('Error: no data for counties');
+    }
+
+    db.all(sqlDiff, [], (err, rowsDiff) => {
+      if (err) return res.status(500).type('txt').send('SQL Error (Diff)');
+      if (!rowsDiff || rowsDiff.length === 0) {
+        return res.status(404).type('txt').send('Error: no data for counties');
+      }
+
+      // Build Annual Table
+      let tableAnnual = `<table><thead><tr><th>County</th><th>State</th><th>Annual Temp (°C)</th></tr></thead><tbody>`;
+      rowsAnnual.forEach(r => {
+        tableAnnual += `<tr><td>${r.CTYNAME}</td><td>${r.STNAME}</td><td>${Number(r.Annual).toFixed(2)}</td></tr>`;
+      });
+      tableAnnual += `</tbody></table>`;
+
+      // Build Seasonal Table
+      let tableDiff = `<table><thead><tr><th>County</th><th>State</th><th>Summer − Winter (°C)</th></tr></thead><tbody>`;
+      rowsDiff.forEach(r => {
+        tableDiff += `<tr><td>${r.CTYNAME}</td><td>${r.STNAME}</td><td>${Number(r.Diff).toFixed(2)}</td></tr>`;
+      });
+      tableDiff += `</tbody></table>`;
+
+      const navLinks = `<span class="disabled">Previous</span> | <a href="/counties/chart">Next: Charts</a>`;
+
+      fs.readFile(path.join(template, "counties_table.html"), "utf8", (err, data) => {
+        if (err) return res.status(500).send("Error reading template file");
+        let response = data
+          .replace("$$$COUNTIES_TABLE_2019$$$", tableAnnual)
+          .replace("$$$COUNTIES_TABLE_AVG$$$", tableDiff)
+          .replace("$$$COUNTIES_NAV_LINKS$$$", navLinks)
+          .replace("$$$COUNTY_IMG_SRC$$$", "/countiesmap.jpg")
+          .replace("$$$COUNTY_IMG_ALT$$$", "Map of U.S. counties");
+        res.status(200).type('html').send(response);
+      });
+    });
+  });
+});
+
+// CHART PAGE
+app.get('/counties/chart', (req, res) => {
+  db.all(sqlAnnual, [], (err, rowsAnnual) => {
+    if (err) return res.status(500).type('txt').send('SQL Error (Annual)');
+    if (!rowsAnnual || rowsAnnual.length === 0) {
+      return res.status(404).type('txt').send('Error: no data for counties');
+    }
+
+    db.all(sqlDiff, [], (err, rowsDiff) => {
+      if (err) return res.status(500).type('txt').send('SQL Error (Diff)');
+      if (!rowsDiff || rowsDiff.length === 0) {
+        return res.status(404).type('txt').send('Error: no data for counties');
+      }
+
+      const countiesAnnual = rowsAnnual.map(r => `${r.CTYNAME}, ${r.STNAME}`);
+      const valuesAnnual = rowsAnnual.map(r => r.Annual);
+
+      const countiesDiff = rowsDiff.map(r => `${r.CTYNAME}, ${r.STNAME}`);
+      const valuesDiff = rowsDiff.map(r => r.Diff);
+
+      const chartScript = `
+        <script>
+          var traceAnnual = {
+            x: ${JSON.stringify(valuesAnnual)},
+            y: ${JSON.stringify(countiesAnnual)},
+            orientation: 'h',
+            type: 'bar',
+            marker: { color: '#ff7f0e' }
+          };
+          var layoutAnnual = { title: 'Top 5 Counties by Annual Temperature Change (1895–2019)', margin: { l: 250, r: 40, t: 50, b: 50 }, height: 500 };
+          Plotly.newPlot('chart-2019', [traceAnnual], layoutAnnual);
+
+          var traceDiff = {
+            x: ${JSON.stringify(valuesDiff)},
+            y: ${JSON.stringify(countiesDiff)},
+            orientation: 'h',
+            type: 'bar',
+            marker: { color: '#1f77b4' }
+          };
+          var layoutDiff = { title: 'Top 5 Counties with Largest Seasonal Difference', margin: { l: 250, r: 40, t: 50, b: 50 }, height: 500 };
+          Plotly.newPlot('chart-avg', [traceDiff], layoutDiff);
+        </script>
+      `;
+
+      const navLinks = `<a href="/counties/table">Previous: Tables</a> | <span class="disabled">Next</span>`;
+
+      fs.readFile(path.join(template, "counties_chart.html"), "utf8", (err, data) => {
+        if (err) return res.status(500).send("Error reading template file");
+        let response = data
+          .replace("$$$COUNTIES_CHART_SCRIPT$$$", chartScript)
+          .replace("$$$COUNTIES_NAV_LINKS$$$", navLinks)
+          .replace("$$$COUNTY_IMG_SRC$$$", "/countiesmap.jpg")
+          .replace("$$$COUNTY_IMG_ALT$$$", "Map of U.S. counties");
+        res.status(200).type('html').send(response);
+      });
+    });
+  });
+});
+
+
 app.listen(port, () => {
   console.log(`Now listening on port ` + port);
 })
